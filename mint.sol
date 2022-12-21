@@ -1439,28 +1439,30 @@ contract Coinsequence is ERC721, Ownable, ReentrancyGuard {
 	fallback() external payable {}
 
 
-
+    // Withdraws ETH stuck in the contract
 	function withdrawFunds(address wallet) external onlyOwner {
 		uint256 balanceOfContract = address(this).balance;
 		payable(wallet).transfer(balanceOfContract);
 	}
 
-
+    // Withdraws tokens stuck in the contract
 	function withdrawTokens(address token, address wallet) external onlyOwner {
 		IERC20(token).transferFrom(address(this), wallet, IERC20(token).balanceOf(address(this)));
 	}
 
+    // Function to update the signer
 	function setSigner(address _signer) external onlyOwner {
 		signer = _signer;
 		emit SetSigner(signer);
 	}
 
+    // function to update tokens per Nft
 	function updateTokensForNft(uint256 tokens) external onlyOwner {
 		tokensPerNft = tokens;
 		emit SetTokensPerNft(tokensPerNft);
 	}
 
-
+    // Function to mint the NFTs to student's wallet using platform signature to validate the transaction
 	function mint(address student, string memory uri, string memory nonce, bytes memory signature)
 	external
 
@@ -1482,6 +1484,7 @@ contract Coinsequence is ERC721, Ownable, ReentrancyGuard {
 
 	}
 
+    // Function to burn NFT using platform signature to validate the transaction
 	function burn(address student, uint256 id, string memory nonce, bytes memory signature)
 	external
 
@@ -1551,6 +1554,7 @@ contract Coinsequence is ERC721, Ownable, ReentrancyGuard {
 		return _tokenURI;
 	}
 
+    // updates uri of a token
 	function updateUri(uint256 id, string memory uri, string memory nonce, bytes memory signature) external {
 		require(!usedNonce[nonce], "Nonce used");
 		require(
@@ -1603,7 +1607,8 @@ contract Coinsequence is ERC721, Ownable, ReentrancyGuard {
 		return ECDSA.recover(hash, signature);
 	}
 
-	function getTokensOfStudent(address student) external view returns(uint256 tokens) {
+    // returns tokens owned by students
+ 	function getTokensOfStudent(address student) external view returns(uint256 tokens) {
 		return (balanceOf(student) * tokensPerNft);
 	}
 
